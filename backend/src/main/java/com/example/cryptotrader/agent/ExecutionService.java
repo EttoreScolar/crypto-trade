@@ -22,6 +22,6 @@ public class ExecutionService {
   public String execute(Decision decision) {
     // MVP: no real trading in starter.
     // Wire real order placement using factory.create().tradeApi().newOrder(...) when ready.
-    return "{"status":"noop","decisionType":"" + decision.type() + ""}";
+    return "{\"status\":\"noop\",\"decisionType\":\"" + decision.type() + "\"}";
   }
 }

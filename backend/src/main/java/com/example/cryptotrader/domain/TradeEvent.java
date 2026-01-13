@@ -10,29 +10,34 @@ public class TradeEvent {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
-
   @Column(nullable = false)
-  private String env; // testnet/prod
+  private String env;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "event_type", nullable = false)
+  private TradeEventType eventType;
 
   @Column(nullable = false)
   private String symbol;
 
+  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private String decision;
+  private TradeSide side;
 
-  @Column(name = "risk_allowed", nullable = false)
-  private boolean riskAllowed;
+  @Column
+  private Double amount;
+
+  @Column
+  private Double confidence;
+
+  @Column
+  private String rationale;
 
   @Column
   private String reason;
 
-  @Column(name = "raw_request", columnDefinition = "jsonb")
-  private String rawRequest;
-
-  @Column(name = "raw_response", columnDefinition = "jsonb")
-  private String rawResponse;
+  @Column(columnDefinition = "jsonb")
+  private String payload;
 
   @Column(name = "created_at", nullable = false)
   private OffsetDateTime createdAt = OffsetDateTime.now();
@@ -40,29 +45,32 @@ public class TradeEvent {
   public Long getId() { return id; }
   public void setId(Long id) { this.id = id; }
 
-  public Long getUserId() { return userId; }
-  public void setUserId(Long userId) { this.userId = userId; }
-
   public String getEnv() { return env; }
   public void setEnv(String env) { this.env = env; }
+
+  public TradeEventType getEventType() { return eventType; }
+  public void setEventType(TradeEventType eventType) { this.eventType = eventType; }
 
   public String getSymbol() { return symbol; }
   public void setSymbol(String symbol) { this.symbol = symbol; }
 
-  public String getDecision() { return decision; }
-  public void setDecision(String decision) { this.decision = decision; }
+  public TradeSide getSide() { return side; }
+  public void setSide(TradeSide side) { this.side = side; }
 
-  public boolean isRiskAllowed() { return riskAllowed; }
-  public void setRiskAllowed(boolean riskAllowed) { this.riskAllowed = riskAllowed; }
+  public Double getAmount() { return amount; }
+  public void setAmount(Double amount) { this.amount = amount; }
+
+  public Double getConfidence() { return confidence; }
+  public void setConfidence(Double confidence) { this.confidence = confidence; }
+
+  public String getRationale() { return rationale; }
+  public void setRationale(String rationale) { this.rationale = rationale; }
 
   public String getReason() { return reason; }
   public void setReason(String reason) { this.reason = reason; }
 
-  public String getRawRequest() { return rawRequest; }
-  public void setRawRequest(String rawRequest) { this.rawRequest = rawRequest; }
-
-  public String getRawResponse() { return rawResponse; }
-  public void setRawResponse(String rawResponse) { this.rawResponse = rawResponse; }
+  public String getPayload() { return payload; }
+  public void setPayload(String payload) { this.payload = payload; }
 
   public OffsetDateTime getCreatedAt() { return createdAt; }
   public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }

@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/cryptotrader}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+
+app:
+  crypto:
+    env: ${APP_ENV:testnet} # testnet or prod
+    binance:
+      apiKey: ${BINANCE_API_KEY:}
+      apiSecret: ${BINANCE_API_SECRET:}
+      baseUrl: ${BINANCE_BASE_URL:} # optional override

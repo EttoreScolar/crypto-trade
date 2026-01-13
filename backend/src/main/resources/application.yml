@@ -15,10 +15,33 @@ spring:
   flyway:
     enabled: true
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+    model:
+      chat: openai
+    openai:
+      chat:
+        options:
+          model: ${SPRING_AI_MODEL:gpt-4o-mini}
+
 app:
-  crypto:
-    env: ${APP_ENV:testnet} # testnet or prod
-    binance:
-      apiKey: ${BINANCE_API_KEY:}
-      apiSecret: ${BINANCE_API_SECRET:}
-      baseUrl: ${BINANCE_BASE_URL:} # optional override
+  env: ${APP_ENV:testnet} # testnet | prod
+  binance:
+    testnetBaseUrl: https://testnet.binance.vision
+    prodBaseUrl: https://api.binance.com
+  killSwitch:
+    redisKey: kill_switch
+    defaultEnabled: ${KILL_SWITCH:false}
+
+  topics:
+    marketTicks: market:ticks
+    tradeIntent: trade:intent
+    tradeApproved: trade:approved
+    tradeRejected: trade:rejected
+    tradeExecuted: trade:executed

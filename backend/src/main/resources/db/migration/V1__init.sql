@@ -1,19 +1,18 @@
-create table app_user (
-  id bigserial primary key,
-  email varchar(255) not null unique,
-  password_hash varchar(255) not null,
-  created_at timestamptz not null default now()
-);
+-- Optional: enable pgvector if you want vector embeddings later.
+-- create extension if not exists vector;
 
 create table trade_event (
   id bigserial primary key,
-  user_id bigint not null,
-  env varchar(16) not null, -- testnet/prod
+  env varchar(16) not null,
+  event_type varchar(32) not null, -- INTENT/APPROVED/REJECTED/EXECUTED
   symbol varchar(32) not null,
-  decision varchar(64) not null,
-  risk_allowed boolean not null,
+  side varchar(8) not null, -- BUY/SELL/HOLD
+  amount numeric,
+  confidence numeric,
+  rationale text,
   reason text,
-  raw_request jsonb,
-  raw_response jsonb,
+  payload jsonb,
   created_at timestamptz not null default now()
 );
+
+create index trade_event_created_at_idx on trade_event(created_at desc);

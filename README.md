@@ -1,33 +1,30 @@
-# Crypto Trader (Starter) - Java + Spring Boot + Postgres + Flyway + Docker + React
+# Crypto Trader (Agentic) - Spring WebFlux + Redis + Spring AI + Postgres (JPA) + Flyway + React
 
-This is a **starter scaffold** for a Binance trading web app.
+This repo scaffolds a **multi-agent trading architecture**:
 
-## What's included
-- **Backend**: Java 21 + Spring Boot + JPA/Hibernate + Flyway + Postgres
-- **Agent loop**: scheduled tick (1s) + persisted TradeEvent
-- **Environments**:
-  - `APP_ENV=testnet` -> uses Binance testnet base URL
-  - `APP_ENV=prod` -> uses real Binance base URL
-- **Frontend**: React (Vite) served by Nginx in Docker, proxies `/api/*` to backend
+- **MarketDataPublisher** publishes ticks to Redis (`market:ticks`)
+- **AnalystAgent** consumes ticks and uses **Spring AI ChatClient** to output a **TradeIntent**
+- **RiskAgent** deterministically validates intents (kill switch, confidence threshold, amount caps) and publishes `trade:approved` / `trade:rejected`
+- **ExecutorAgent** demonstrates **Spring AI tool calling** by forcing a tool call to `placeOrder(...)` using the approved intent
+- **TradeEvent** rows are persisted in Postgres using **JPA** (off the hot path)
 
-> Safety: Real order placement is intentionally **disabled** in this starter (strategy only emits HOLD).
+> By default, `placeOrder(...)` is a **NOOP**. Implement signed Binance order placement only after adding key management and more risk controls.
 
-## Run with Docker
-1) Copy env:
+## Run
 ```bash
 cp .env.example .env
-```
-
-2) Start:
-```bash
 docker compose --env-file .env up --build
 ```
 
-- Frontend: http://localhost:3000
-- Backend: http://localhost:8080
+Frontend: http://localhost:3000  
+Backend: http://localhost:8080
 
-## Next steps
-- Implement proper auth (JWT) and multi-user model
-- Encrypt API keys at rest
-- Add risk limits (max order size, max daily loss, cooldowns)
-- Implement real order placement in `ExecutionService` using Binance connector
+## API
+- GET `/api/events/latest` -> latest events from Postgres
+- GET `/api/stream/events` -> SSE of executed trades
+- GET `/api/killswitch` -> true/false
+- POST `/api/killswitch/enable` / `/disable`
+
+## Notes
+- Spring AI requires `OPENAI_API_KEY`. Without it, intents will default to HOLD and no trades will be executed.
+- WebFlux + JPA is used intentionally here: DB writes run on boundedElastic to avoid blocking reactive threads.
